@@ -2,7 +2,7 @@
 title: "p8105_hw6_yz4184"
 author: "Yunlin Zhou"
 date: "12/4/2021"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -109,6 +109,10 @@ cv_df %>%
   ggplot(aes(x = model, y = rmse)) + geom_violin()
 ```
 
+As shown in the plot, mod_3 has the smallest rmse which makes mod_3 the best model.
+
+
+
 
 ## Problem 2
 
@@ -128,8 +132,7 @@ weather_df =
   select(name, id, everything())
 ```
 
-
-### Adjusted R square
+### R square
 
 ```{r}
 bootstrap_r = 
@@ -143,15 +146,19 @@ bootstrap_r =
   unnest(results)
 
 bootstrap_r%>%
-  ggplot(aes(x = adj.r.squared))+
+  ggplot(aes(x = r.squared))+
   geom_histogram()
 
 bootstrap_r %>% 
   summarize(
-    ci_lower = quantile(adj.r.squared, 0.025), 
-    ci_upper = quantile(adj.r.squared, 0.975))
+    ci_lower = quantile(r.squared, 0.025), 
+    ci_upper = quantile(r.squared, 0.975))
 
 ```
+
+95% confidence interval for R square is from 0.894 to 0.927.
+The distribution of R square is approximately a  normal distribution and the mu is around 0.91.
+
 
 ### log_value
 
@@ -181,3 +188,5 @@ bootstrap_b %>%
     ci_upper = quantile(log_value, 0.975))
 ```
 
+95% confidence interval for R square is from 1.96 to 2.06.
+The distribution of R square is approximately a  normal distribution and the mu is around 2.
