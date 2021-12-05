@@ -108,6 +108,8 @@ cv_df %>%
 
 ## Problem 2
 
+### Load data
+
 ```{r}
 weather_df = 
   rnoaa::meteo_pull_monitors(
@@ -121,6 +123,9 @@ weather_df =
     tmax = tmax / 10) %>%
   select(name, id, everything())
 ```
+
+
+### Adjusted R square
 
 ```{r}
 bootstrap_r = 
@@ -151,18 +156,22 @@ bootstrap_b =
  mutate(
     models =map(.x = strap, ~lm(tmax ~ tmin, data = .x)),
     results = map(models, broom::tidy))%>%
-  select(strap_number,coeff)%>%
-  unnest(results)
+  select(strap_number,results)%>%
+  unnest(results)%>%
+  select(strap_number, term, estimate)%>%
+  pivot_wider(names_from = term,
+              values_from = estimate)%>%
+ janitor::clean_names()%>%
+ mutate(
+   log_value = log(intercept * tmin))
 
 bootstrap_b%>%
-  ggplot(aes(x = adj.r.squared))+
-  geom_histogram()+
-  facet_grid(~term, scales = "free"
-  )
+  ggplot(aes(x = log_value))+
+  geom_histogram()
 
-bootstrap_r %>% 
+bootstrap_b %>% 
   summarize(
-    ci_lower = quantile(adj.r.squared, 0.025), 
-    ci_upper = quantile(adj.r.squared, 0.975))
+    ci_lower = quantile(log_value, 0.025), 
+    ci_upper = quantile(log_value, 0.975))
 ```
 
