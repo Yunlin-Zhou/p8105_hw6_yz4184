@@ -50,8 +50,10 @@ birth_weight_df = read_csv("./birthweight.csv")%>%
 
 ### Set my own model
 
+I choose the columns including gestational age in weeks, mother’s height, mother’s pre-pregnancy weight as the factors that might cause low birth weight. Because early-born babies are more likely to have low-birth weight, and if the mother is skinny, the baby might teand to have lower weight. 
+
 ```{r}
-fit = lm(bwt ~ gaweeks + mheight + ppbmi + ppwt, data = birth_weight_df)
+fit = lm(bwt ~ gaweeks + mheight + ppwt, data = birth_weight_df)
 
 residual_btw = modelr::add_residuals(birth_weight_df, fit)%>%select(resid)
 
@@ -64,6 +66,8 @@ ggplot(aes(x = pred, y = resid)) +
   geom_point()+
   geom_smooth()
 ```
+
+The goal of residuals vs predicted values plot is seeing a random pattern distributed around 0. As shown in the plot, the dots are evenly distribute around 0 and satisfied the goal.
 
 ### 2 other models
 
@@ -148,6 +152,8 @@ bootstrap_r %>%
     ci_upper = quantile(adj.r.squared, 0.975))
 
 ```
+
+### log_value
 
 ```{r}
 bootstrap_b = 
